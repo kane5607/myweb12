@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Traffic Light</title>
+    <style>
+        body {
+            background: #222;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .traffic-light {
+            background: #333;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .light {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #111;
+        }
+
+        .on.red { background: red; }
+        .on.yellow { background: yellow; }
+        .on.green { background: limegreen; }
+    </style>
+</head>
+<body>
+
+<div class="traffic-light">
+    <div class="light red" id="red"></div>
+    <div class="light yellow" id="yellow"></div>
+    <div class="light green" id="green"></div>
+</div>
+
+<script>
+    async function updateLight() {
+        try {
+            const res = await fetch("/cgi-bin/trafficlight.cgi");
+            const state = (await res.text()).trim();
+
+            document.getElementById("red").classList.remove("on");
+            document.getElementById("yellow").classList.remove("on");
+            document.getElementById("green").classList.remove("on");
+
+            if (state === "red") document.getElementById("red").classList.add("on");
+            if (state === "yellow") document.getElementById("yellow").classList.add("on");
+            if (state === "green") document.getElementById("green").classList.add("on");
+        } catch (e) {
+            console.error("Error fetching state:", e);
+        }
+    }
+
+    setInterval(updateLight, 1000);
+</script>
+
+</body>
+</html>
